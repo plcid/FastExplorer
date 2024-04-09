@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="app">
+      <UniqueIdentifier>{def75583-f888-444f-ac8d-deafcb8d2b71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="font">
+      <UniqueIdentifier>{def85664-2d0d-4b25-bd06-66f0ae36cc77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="menu">
+      <UniqueIdentifier>{4849b6dd-a769-49a2-90b7-3c945578c801}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render">
+      <UniqueIdentifier>{50d50a15-2cce-418f-b600-94facef0058d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utils">
+      <UniqueIdentifier>{39c1761f-26e5-4a2f-80dc-f42b6559d8d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render\directx">
+      <UniqueIdentifier>{8915d778-6830-4f90-af25-f01ec31bff64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render\imgui">
+      <UniqueIdentifier>{342fb887-af17-4a95-84cd-b823e3ed6b1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render\win32">
+      <UniqueIdentifier>{43610475-b2f7-4b3f-9184-1e83398ee43a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="FastExplorer.cpp" />
+    <ClCompile Include="render\render.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="render\win32\imgui_impl_win32.cpp">
+      <Filter>render\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="render\imgui\imgui.cpp">
+      <Filter>render\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="render\imgui\imgui_demo.cpp">
+      <Filter>render\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="render\imgui\imgui_draw.cpp">
+      <Filter>render\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="render\imgui\imgui_tables.cpp">
+      <Filter>render\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="render\imgui\imgui_widgets.cpp">
+      <Filter>render\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="render\directx\imgui_impl_dx12.cpp">
+      <Filter>render\directx</Filter>
+    </ClCompile>
+    <ClCompile Include="menu\menu.cpp">
+      <Filter>menu</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="render\render.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="render\win32\imgui_impl_win32.h">
+      <Filter>render\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="render\imgui\imconfig.h">
+      <Filter>render\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="render\imgui\imgui.h">
+      <Filter>render\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="render\imgui\imgui_internal.h">
+      <Filter>render\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="render\imgui\imguiraw.h">
+      <Filter>render\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="render\imgui\imstb_rectpack.h">
+      <Filter>render\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="render\imgui\imstb_textedit.h">
+      <Filter>render\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="render\imgui\imstb_truetype.h">
+      <Filter>render\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="render\directx\imgui_impl_dx12.h">
+      <Filter>render\directx</Filter>
+    </ClInclude>
+    <ClInclude Include="menu\menu.h">
+      <Filter>menu</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
