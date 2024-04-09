@@ -1,5 +1,5 @@
 # FastExplorer
 Very fast windows explorer made with a C++ ImGui implementation
 
-#Build
+# Build
 Release | x64
