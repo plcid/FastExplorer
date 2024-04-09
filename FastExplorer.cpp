@@ -1,7 +1,7 @@
 #define WIN32_LEAN_AND_MEAN
 
 #include <windows.h>
-#include "render/render.h"
+#include "render/render.hpp"
 
 using namespace App;
 
