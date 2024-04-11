@@ -55,6 +55,12 @@
     <ClCompile Include="menu\menu.cpp">
       <Filter>menu</Filter>
     </ClCompile>
+    <ClCompile Include="utils\explorer.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\utils.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="render\render.hpp">
@@ -89,6 +95,12 @@
     </ClInclude>
     <ClInclude Include="menu\menu.hpp">
       <Filter>menu</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\explorer.hpp">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\utils.hpp">
+      <Filter>utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

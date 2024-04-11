@@ -142,6 +142,8 @@
     <ClCompile Include="render\imgui\imgui_widgets.cpp" />
     <ClCompile Include="render\render.cpp" />
     <ClCompile Include="render\win32\imgui_impl_win32.cpp" />
+    <ClCompile Include="utils\explorer.cpp" />
+    <ClCompile Include="utils\utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="menu\menu.hpp" />
@@ -155,6 +157,8 @@
     <ClInclude Include="render\imgui\imstb_truetype.hpp" />
     <ClInclude Include="render\render.hpp" />
     <ClInclude Include="render\win32\imgui_impl_win32.hpp" />
+    <ClInclude Include="utils\explorer.hpp" />
+    <ClInclude Include="utils\utils.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
