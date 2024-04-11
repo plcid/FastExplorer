@@ -6,9 +6,11 @@ void Menu::Initialize() {
 
 	squareWHV = ImVec2(40.f, 40.f);
 	smallsWHV = ImVec2(25.f, 25.f);
+	ExpTabMul = ImVec2(4.0f, 1.0f);
 
-	openedExplorerWindows.push_back(std::pair<std::string, std::filesystem::path>(currentDirectory.string(), currentDirectory));
-
+	expmgr = new ExplorerManager();
+	expmgr -> Initialize();
+	
 	extensionToIcon = {
 		// DOC
 		{".txt",  ICON_FA_FILE_ALT},
@@ -20,8 +22,29 @@ void Menu::Initialize() {
 		// SYS
 		{".dll", ICON_FA_FILE},
 		// SYS
+
+		// CODE
+		{".c",		ICON_FA_FILE_CODE},
+		{".cc",		ICON_FA_FILE_CODE},
+		{".cpp",	ICON_FA_FILE_CODE},
+		{".cxx",	ICON_FA_FILE_CODE},
+
+		{".h",		ICON_FA_FILE_CODE},
+		{".hh",		ICON_FA_FILE_CODE},
+		{".hpp",	ICON_FA_FILE_CODE},
+		{".hxx",	ICON_FA_FILE_CODE},
+
+		{".java",	ICON_FA_FILE_CODE},
+		{".py",		ICON_FA_FILE_CODE},
+		{".cs",		ICON_FA_FILE_CODE},
+		{".php",	ICON_FA_FILE_CODE},
+		{".swift",	ICON_FA_FILE_CODE},
+		{".vb",		ICON_FA_FILE_CODE},
+
+		// CODE
 		
 		// CFG
+		{".cfg",	ICON_FA_COG},
 		{".config", ICON_FA_COG},
 		{".ini",	ICON_FA_COG},
 		//CFG
@@ -31,16 +54,27 @@ void Menu::Initialize() {
 		{".jpg",	ICON_FA_FILE_IMAGE},
 		{".gif",	ICON_FA_FILE_IMAGE},
 		{".bmp",	ICON_FA_FILE_IMAGE},
+		{".ico",	ICON_FA_FILE_IMAGE},
 		{".webp",	ICON_FA_FILE_IMAGE},
 		{".svg",	ICON_FA_FILE_IMAGE},
 		{".jpeg",	ICON_FA_FILE_IMAGE},
 		{".heif",	ICON_FA_FILE_IMAGE},
 		{".heic",	ICON_FA_FILE_IMAGE},
 		// IMAGES
+
+		// MEDIA
+		{".mp4",	ICON_FA_FILE_VIDEO},
+		{".mov",	ICON_FA_FILE_VIDEO},
+		{".avi",	ICON_FA_FILE_VIDEO},
+		{".mkv",	ICON_FA_FILE_VIDEO},
+		{".wmv",	ICON_FA_FILE_VIDEO},
+		{".mpg",	ICON_FA_FILE_VIDEO},
+		{".webm",	ICON_FA_FILE_VIDEO},
+		{".avchd",	ICON_FA_FILE_VIDEO},
+		// MEDIA
 		
 		{".zip", ICON_FA_FILE_ARCHIVE}
 	};
-
 
 	Initialized = true;
 }
@@ -48,8 +82,8 @@ void Menu::Initialize() {
 // TODO : NEEDS OOP AND ABSTRACTION : make type called explorermanager that does stuff like set dir, go back and future paths, etc (least logic as possible in render)
 
 void Menu::RenderMenu() {
-	ImGui::PushFont(NormalFont);
-	ImGui::PushFont(IconFont);
+	ImGui::PushFont(Menu::NormalFont);
+	ImGui::PushFont(Menu::IconFont);
 
 	ImGui::Begin("##main", NULL, 
 		ImGuiWindowFlags_NoMove |
@@ -73,14 +107,14 @@ void Menu::RenderMenu() {
 				// { show extension, show type icon (needs to be moved to ini file) }
 				ImGui::SameLine();
 
-				VerticalSeparator(0, squareWHV.x);
+				utils::VerticalSeparator(0, squareWHV.x);
 
 				ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetColorU32(ImGuiCol_ButtonHovered));
 				ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, { 0.f, 0.5f });
-				for (int i = 0; i < openedExplorerWindows.size(); i++) {
-					if (ImGui::Button(openedExplorerWindows[i].first.c_str(), squareWHV * ImVec2{ 4.f, 1.f })) {
-						openedExplorerWindowIndex = i;
-						currentDirectory = openedExplorerWindows[i].second;
+				for (int i = 0; i < expmgr->openedExplorerWindows.size(); i++) {
+					if (ImGui::Button(expmgr->openedExplorerWindows[i].first.c_str(), squareWHV * ExpTabMul)) {
+						expmgr->openedExplorerWindowIndex = i;
+						expmgr->currentDirectory = expmgr->openedExplorerWindows[i].second;
 					}
 					ImGui::SameLine();
 				}
@@ -88,30 +122,24 @@ void Menu::RenderMenu() {
 				ImGui::PopStyleColor();
 
 				if (ImGui::Button((const char*)ICON_FA_PLUS, squareWHV)) {
-					openedExplorerWindows.push_back(openedExplorerWindows[openedExplorerWindows.size() - 1]); // create new window with default path being top stack window's path
+
+					// create new window with default path being top stack window's path
+					expmgr->openedExplorerWindows.push_back(
+						expmgr->openedExplorerWindows[
+							expmgr->openedExplorerWindows.size() - 1
+						]
+					);
 				}
 			}
 			ImGui::Separator();
 			{
 				{
-					bool hasPreviousPaths = previousPaths.size() > 0;
+					bool hasPreviousPaths = expmgr->previousPaths.size() > 0;
 					if (!hasPreviousPaths)
 						ImGui::PushStyleColor(ImGuiCol_Text, { .5f,.5f,.5f,1.f });
 
-					if (ImGui::Button((const char*)ICON_FA_ARROW_LEFT, smallsWHV)) {
-						if (hasPreviousPaths) {
-							futurePaths.push(currentDirectory);
-							currentDirectory = previousPaths.top();
-							std::string str = currentDirectory.string();
-							int i = str.size();
-							while (str[i] != '\\' && i) i--;
-							if (i == str.size() - 1) i = 0;
-
-							openedExplorerWindows[openedExplorerWindowIndex].first = str.substr(i + i != 0);
-							openedExplorerWindows[openedExplorerWindowIndex].second = currentDirectory;
-							previousPaths.pop();
-						}
-					}
+					if (ImGui::Button((const char*)ICON_FA_ARROW_LEFT, smallsWHV))
+						expmgr->goToPreviousDir();
 
 					if (!hasPreviousPaths)
 						ImGui::PopStyleColor();
@@ -120,79 +148,63 @@ void Menu::RenderMenu() {
 				ImGui::SameLine();
 
 				{
-					bool hasFuturePaths = futurePaths.size() > 0;
+					bool hasFuturePaths = expmgr->futurePaths.size() > 0;
 					if (!hasFuturePaths)
 						ImGui::PushStyleColor(ImGuiCol_Text, { .5f,.5f,.5f,1.f });
 
-					if (ImGui::Button((const char*)ICON_FA_ARROW_RIGHT, smallsWHV)) {
-						if (hasFuturePaths) {
-							previousPaths.push(currentDirectory);
-							currentDirectory = futurePaths.top();
-							std::string str = currentDirectory.string();
-							int i = str.size();
-						    while (str[i] != '\\' && i) i--;
-							if (i == str.size() - 1) i = 0;
-
-							openedExplorerWindows[openedExplorerWindowIndex].first = str.substr(i + i != 0);
-							openedExplorerWindows[openedExplorerWindowIndex].second = currentDirectory;
-							futurePaths.pop();
-						}
-					}
+					if (ImGui::Button((const char*)ICON_FA_ARROW_RIGHT, smallsWHV))
+						expmgr->goToFutureDir();
 
 					if (!hasFuturePaths)
 						ImGui::PopStyleColor();
 				}
 				ImGui::SameLine();
-				VerticalSeparator(0, smallsWHV.x);
-				ImGui::Text(currentDirectory.string().c_str());
+				utils::VerticalSeparator(0, smallsWHV.x);
+				ImGui::Text(expmgr->currentDirectory.string().c_str());
 				ImGui::Separator();
 			}
-			for (const auto& subdir : fs::directory_iterator(currentDirectory)) {
-				std::string str = subdir.path().string().substr(
-					currentDirectory.string().size() + (currentDirectory.string()[currentDirectory.string().size() - 1] != '\\'));
 
-				if (fs::is_directory(subdir) || fs::is_regular_file(subdir)) {
-					
-					// if in base of drive, IE C:\, dont cut off the start (if not, the start char is "\")
+			// would not begin a child if window loaded scrollbar
+			ImGui::BeginChild("##subdirs");
 
-					ImGui::Text(
-						(const char*)
-						(subdir.path().has_extension()
-							?
-							extensionToIcon.find(subdir.path().extension()) == extensionToIcon.end() ? ICON_FA_FILE : extensionToIcon[subdir.path().extension()]
-							:
-							ICON_FA_FOLDER
-						)
-					);
-					ImGui::SameLine();
-					ImGui::SetCursorScreenPos({ 30, ImGui::GetCursorScreenPos().y });
-					
-					if (ImGui::Selectable(str.c_str())) {
-						if (hasAccess(subdir)) {
-							previousPaths.push(currentDirectory);
-							futurePaths = std::stack<std::filesystem::path>();
-							openedExplorerWindows[openedExplorerWindowIndex].first = str;
-							openedExplorerWindows[openedExplorerWindowIndex].second = subdir;
-							currentDirectory = subdir;
-							break;
-						}
+			// very hacky fix to annoying padding error
+			ImGui::SetCursorScreenPos(ImGui::GetCursorScreenPos() + ImVec2{ 0, 3 });
+
+			for (const auto& subdir : fs::directory_iterator(expmgr->currentDirectory)) {
+
+				// the below if statement is a very taxing check, would not suggest
+				/*if (fs::is_directory(subdir) || fs::is_regular_file(subdir))*/
+
+				ImGui::Text(
+					(const char*) // cast char* to char8_t*
+					(subdir.path().has_extension()
+						?
+						extensionToIcon.find(subdir.path().extension()) == extensionToIcon.end() ? ICON_FA_FILE : extensionToIcon[subdir.path().extension()]
+						:
+						ICON_FA_FOLDER
+					)
+				); // try map extension to a displayable icon
+
+				ImGui::SameLine();
+				ImGui::SetCursorScreenPos({ 30, ImGui::GetCursorScreenPos().y });
+
+				if (ImGui::Selectable(expmgr->pathToCurrentDirectory(subdir).c_str())) {
+					if (fs::is_directory(subdir)) {
+						expmgr->tryOpenDirectory(subdir);
+						break;
+					}
+					else {
+						expmgr->openFileWithAssociatedApp(subdir);
 					}
 				}
 			}
-		}
 
+			ImGui::EndChild();
+		}
 	}
 	ImGui::End();
-
 	ImGui::PopFont();
 	ImGui::PopFont();
-}
-
-void Menu::VerticalSeparator(int offset, int customheight) {
-	ImVec2 scrpos = ImGui::GetCursorScreenPos();
-	scrpos.x += offset;
-	ImGui::GetWindowDrawList()->AddLine(scrpos, {scrpos.x, scrpos.y + (customheight ? customheight : ImGui::GetWindowSize().y)}, ImGui::GetColorU32(ImGuiCol_Separator));
-	ImGui::SetCursorScreenPos(scrpos + ImVec2{ ImGui::GetStyle().ItemSpacing.x + 1,0 });
 }
 
 void Menu::SetupStyle() {
