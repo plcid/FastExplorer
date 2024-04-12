@@ -1,5 +1,5 @@
 # FastExplorer
-Lightweight windows explorer made with a C++ ImGui implementation
+Barebones & Lightweight Windows Explorer Alternative
 
 # Build
 Release | x64
